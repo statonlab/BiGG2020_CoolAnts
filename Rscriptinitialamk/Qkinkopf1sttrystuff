@@ -1,0 +1,83 @@
+(base) Annes-MacBook-Air-3:Fungi annekinkopf$ mkdir FungiFun
+(base) Annes-MacBook-Air-3:Fungi annekinkopf$ cd FungiFun
+(base) Annes-MacBook-Air-3:FungiFun annekinkopf$ vi make_manifest.sh
+(base) Annes-MacBook-Air-3:FungiFun annekinkopf$ bash make_manifest.sh >> manifest.tsv
+(base) Annes-MacBook-Air-3:FungiFun annekinkopf$ ls
+make_manifest.sh	manifest.tsv
+(base) Annes-MacBook-Air-3:FungiFun annekinkopf$ # load qiime environment
+(base) Annes-MacBook-Air-3:FungiFun annekinkopf$ conda activate qiime2-2020.2
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ # run the import command
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime tools import \
+> ma--type 'SampleData[PairedEndSequencesWithQuality]' \
+> ma--input-path manifest.tsv \
+> ma--output-path paired-end-demux.qza \
+> ma--input-format PairedEndFastqManifestPhred33V2
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime tools import/
+Usage: qiime tools [OPTIONS] COMMAND [ARGS]...
+Try "qiime tools --help" for help.
+
+Error: No such command "import/".
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime tools import \
+> --type 'SampleData[PairedEndSequencesWithQuality]' \
+> --input-path manifest.tsv \
+> --output-path paired-end-demux.qza \
+> --input-format PairedEndFastqManifestPhred33V2
+Imported manifest.tsv as PairedEndFastqManifestPhred33V2 to paired-end-demux.qza
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ ls
+make_manifest.sh	manifest.tsv		paired-end-demux.qza
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ #testing out denoising on the fungi
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime dada2 paired end denoise \
+> --i-demultiplexed-seqs paired-end-demux.qza \
+> --p-trim-left 20 \
+> --p-trunc-len 200 \
+> qiime dada2 paired end denoise --i-demultiplexed-seqs paired-end-demux.qza --p-trim-left 20 --p-trunc-len 200 \
+> qiime dada2 paired end denoise
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ ls
+make_manifest.sh	manifest.tsv		paired-end-demux.qza
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ --p-trunc-len-f \ 
+-bash: --p-trunc-len-f: command not found
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime demux summarize \
+> --i-data demux_file \
+> --o-visualization demux_file.qzv
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime demux summarize \
+> --i-data paired-end-demux.qza \
+> --o-visualization paired-end-demux.qzv
+
+^C
+Aborted!
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime demux summarize \
+> --i-data paired-end-demux.qza \
+> --o-visualization paired-end-demux.qzv
+Saved Visualization to: paired-end-demux.qzv
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ --p-trim-left 20 \
+> --p-trunc-len 200
+-bash: --p-trim-left: command not found
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime dada2 denoise-paired
+Usage: qiime dada2 denoise-paired [OPTIONS]
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ head manifest.tsv
+sample-id	forward-absolute-filepath	reverse-absolute-filepath
+1stAMP-NTC_S1_L001	/Users/annekinkopf/Desktop/TeamCoolAnt/raw_data/Fungi/FungiFun/../1stAMP-NTC_S1_L001_R1_001.fastq.gz	/Users/annekinkopf/Desktop/TeamCoolAnt/raw_data/Fungi/FungiFun/../1stAMP-NTC_S1_L001_R2_001.fastq.gz
+2ndAMP-NTC_S2_L001	/Users/annekinkopf/Desktop/TeamCoolAnt/raw_data/Fungi/FungiFun/../2ndAMP-NTC_S2_L001_R1_001.fastq.gz	/Users/annekinkopf/Desktop/TeamCoolAnt/raw_data/Fungi/FungiFun/../2ndAMP-NTC_S2_L001_R2_001.fastq.gz
+BRA10_S108_L001	/Users/annekinkop
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime tools view paired-end-demux.qzv
+Press the 'q' key, Control-C, or Control-D to quit. This view may no longer be accessible or work correctly after quitting.
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime dada2 denoise-paired \
+> --i-demultiplexed-seqs paired-end-demux.qza \
+> --p-trim-left-f 20 \
+> --p-trim left-r 20 \
+> qiime dada2 denoise-paired --i-demultiplexed-seqs paired-end-demux.qza --p-trim-left-f 20 --p-trim-left-r 20 \ --o-representative-sequences rep-seqsF-dada2.qza \ --o-table tableF-dada2.qza \ --o-denoising-stats statsF-dada2.qza
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime dada2 denoise-paired \
+> --i-demultiplexed-seqs paired-end-demux.qza \
+> --p-trim-left-f 20 \
+> --p-trim-left-r 20 \
+> --p-trunc-len-f 200 \
+> --p-trunc-len-r 200 \
+> --o-representative-sequences rep-seqsF-dada2.qza \
+> --o-table tableF-dada2.qza \
+> --o-denoising-stats statsF-dada2.qza
