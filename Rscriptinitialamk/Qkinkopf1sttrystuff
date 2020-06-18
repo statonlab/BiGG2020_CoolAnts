@@ -100,3 +100,53 @@ Press the 'q' key, Control-C, or Control-D to quit. This view may no longer be a
 > --o-representative-sequences rep-seqsF-dada2.qza \
 > --o-table tableF-dada2.qza \
 > --o-denoising-stats statsF-dada2.qza
+
+
+
+
+
+#making the metadata stuff
+
+Last login: Mon Jun 15 11:21:48 on ttys000
+(base) Annes-MacBook-Air-3:~ annekinkopf$ ssh akinkopf@staton.newton.utk.edu
+akinkopf@staton.newton.utk.edu's password: 
+Last login: Thu Jun 11 13:38:58 2020 from 40.136.110.145
+(base) [akinkopf@staton ~]$ ls
+(base) [akinkopf@staton ~]$ pwd
+/home/akinkopf
+(base) [akinkopf@staton ~]$ cd Metadata_SeedCoat.csv
+-bash: cd: Metadata_SeedCoat.csv: No such file or directory
+(base) [akinkopf@staton ~]$ cd Metadata_SeedCoat
+-bash: cd: Metadata_SeedCoat: No such file or directory
+(base) [akinkopf@staton ~]$ wget \
+> -O "sample-metadata.tsv" \
+> ^C
+(base) [akinkopf@staton ~]$ wget \
+> -O "Metadata_SeedCoat.tsv" \
+> "https://docs.google.com/spreadsheets/d/15Fd5v3k4CQXLYjMXMST-nzrw8BO4VjqNVA5BqSV7LZw/edit#gid=364114895"
+--2020-06-18 16:25:04--  https://docs.google.com/spreadsheets/d/15Fd5v3k4CQXLYjMXMST-nzrw8BO4VjqNVA5BqSV7LZw/edit
+Resolving docs.google.com (docs.google.com)... 173.194.219.138, 173.194.219.101, 173.194.219.100, ...
+Connecting to docs.google.com (docs.google.com)|173.194.219.138|:443... connected.
+HTTP request sent, awaiting response... 302 Moved Temporarily
+Location: https://accounts.google.com/ServiceLogin?service=wise&passive=1209600&continue=https://docs.google.com/spreadsheets/d/15Fd5v3k4CQXLYjMXMST-nzrw8BO4VjqNVA5BqSV7LZw/edit&followup=https://docs.google.com/spreadsheets/d/15Fd5v3k4CQXLYjMXMST-nzrw8BO4VjqNVA5BqSV7LZw/edit&ltmpl=sheets [following]
+--2020-06-18 16:25:05--  https://accounts.google.com/ServiceLogin?service=wise&passive=1209600&continue=https://docs.google.com/spreadsheets/d/15Fd5v3k4CQXLYjMXMST-nzrw8BO4VjqNVA5BqSV7LZw/edit&followup=https://docs.google.com/spreadsheets/d/15Fd5v3k4CQXLYjMXMST-nzrw8BO4VjqNVA5BqSV7LZw/edit&ltmpl=sheets
+Resolving accounts.google.com (accounts.google.com)... 172.217.215.84, 2607:f8b0:4002:c0f::54
+Connecting to accounts.google.com (accounts.google.com)|172.217.215.84|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: unspecified [text/html]
+Saving to: ‘Metadata_SeedCoat.tsv’
+
+Metadata_SeedCoat.t     [ <=>                ]  58.29K  --.-KB/s    in 0.02s   
+
+2020-06-18 16:25:05 (3.11 MB/s) - ‘Metadata_SeedCoat.tsv’ saved [59685]
+
+(base) [akinkopf@staton ~]$ ls
+Metadata_SeedCoat.tsv
+(base) [akinkopf@staton ~]$ qiime feature-table summarize \
+> --i-table tableF.qza \
+> --o-visualization tableF.qzv \
+> --m-sample-metadata-file Metadata_SeedCoat.tsv
+-bash: qiime: command not found
+(base) [akinkopf@staton ~]$ logout
+Connection to staton.newton.utk.edu closed.
+(base) Annes-MacBook-Air-3:~ annekinkopf$ 
