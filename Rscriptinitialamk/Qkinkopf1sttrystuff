@@ -1,3 +1,35 @@
+#downloading fungi data pathway
+
+#finding pathway of where to store data
+(base) Annes-MacBook-Air-3:TeamCoolAnt annekinkopf$ pwd
+/Users/annekinkopf/Desktop/TeamCoolAnt
+#choosing the raw_data folder to put stuff in
+(base) Annes-MacBook-Air-3:TeamCoolAnt annekinkopf$ cd raw_data
+(base) Annes-MacBook-Air-3:raw_data annekinkopf$ ls
+Fungi
+#removing fungi folder and then making a new one for replacing old data
+(base) Annes-MacBook-Air-3:raw_data annekinkopf$ rm Fungi
+rm: Fungi: is a directory
+(base) Annes-MacBook-Air-3:raw_data annekinkopf$ rm dir Fungi
+rm: dir: No such file or directory
+rm: Fungi: is a directory
+(base) Annes-MacBook-Air-3:raw_data annekinkopf$ rmdir Fungi
+rmdir: Fungi: Directory not empty
+(base) Annes-MacBook-Air-3:raw_data annekinkopf$ rm -r Fungi
+(base) Annes-MacBook-Air-3:raw_data annekinkopf$ mkdir Fungi
+(base) Annes-MacBook-Air-3:raw_data annekinkopf$ cd Fungi
+#to download data into folder path
+scp -r akinkopf@staton.newton.utk.edu:/staton/projects/BiGG_CoolAnt/raw_data/Fungi .
+
+#for broken pipes to speed things along and rsync so that it won't double download files
+caffeinate rsync -avz akinkopf@staton.newton.utk.edu:/staton/projects/BiGG__CoolAnt/raw_data/Fungi/*gz .
+
+#will allow you to look at stuff you just downloaded
+ls -lh
+
+
+
+
 #Importing demultiplexed fastq files for fungi data (making a filter to clean data)
 
 (base) Annes-MacBook-Air-3:Fungi annekinkopf$ mkdir FungiFun
