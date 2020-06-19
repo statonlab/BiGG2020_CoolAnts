@@ -150,3 +150,31 @@ Metadata_SeedCoat.tsv
 (base) [akinkopf@staton ~]$ logout
 Connection to staton.newton.utk.edu closed.
 (base) Annes-MacBook-Air-3:~ annekinkopf$ 
+
+
+#getting the metadata and turning it into feature tables WORKED
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ scp akinkopf@staton.newton.utk.edu:/staton/projects/BiGG_CoolAnt/Metadata_SeedCoat4.txt
+usage: scp [-346BCpqrv] [-c cipher] [-F ssh_config] [-i identity_file]
+           [-l limit] [-o ssh_option] [-P port] [-S program] source ... target
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ mkdir Metadata
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ rm Metadata
+rm: Metadata: is a directory
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ rm -r Metadata
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ cd TeamCoolAnt
+-bash: cd: TeamCoolAnt: No such file or directory
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ head Metadata_SeedCoat4.txt
+head: Metadata_SeedCoat4.txt: No such file or directory
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ pwd
+/Users/annekinkopf/Desktop/TeamCoolAnt/raw_data/Fungi/FungiFun
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ cd Fungi
+-bash: cd: Fungi: No such file or directory
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ cd ..
+(qiime2-2020.2) Annes-MacBook-Air-3:Fungi annekinkopf$ cd..
+-bash: cd..: command not found
+(qiime2-2020.2) Annes-MacBook-Air-3:Fungi annekinkopf$ cd ..
+(qiime2-2020.2) Annes-MacBook-Air-3:raw_data annekinkopf$ cd Fungi
+(qiime2-2020.2) Annes-MacBook-Air-3:Fungi annekinkopf$ cd ..
+(qiime2-2020.2) Annes-MacBook-Air-3:raw_data annekinkopf$ mkdir Metadata
+(qiime2-2020.2) Annes-MacBook-Air-3:raw_data annekinkopf$ cd Metadata
+(qiime2-2020.2) Annes-MacBook-Air-3:Metadata annekinkopf$ scp akinkopf@staton.newton.utk.edu:/staton/projects/BiGG_CoolAnt/Metadata_SeedCoat4.txt .
