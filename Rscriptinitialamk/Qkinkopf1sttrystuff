@@ -152,13 +152,10 @@ Connection to staton.newton.utk.edu closed.
 (base) Annes-MacBook-Air-3:~ annekinkopf$ 
 
 
-#getting the metadata and turning it into feature tables WORKED
+#getting the metadata and turning it into feature tables WORKED (the "." helps get it to the place you need in less steps)
 
 
-(base) Annes-MacBook-Air-3:~ annekinkopf$ pwd
-/Users/annekinkopf
-(base) Annes-MacBook-Air-3:~ annekinkopf$ cd Desktop/TeamCoolAnt/Fungi/FungiFun
--bash: cd: Desktop/TeamCoolAnt/Fungi/FungiFun: No such file or directory
+
 (base) Annes-MacBook-Air-3:~ annekinkopf$ cd Desktop/TeamCoolAnt/raw_data/Fungi/FungiFun
 (base) Annes-MacBook-Air-3:FungiFun annekinkopf$ scp akinkopf@staton.newton.utk.edu:/staton/projects/BiGG_CoolAnt/Fungi_Metadata_SeedCoat.xlsx
 usage: scp [-346BCpqrv] [-c cipher] [-F ssh_config] [-i identity_file]
