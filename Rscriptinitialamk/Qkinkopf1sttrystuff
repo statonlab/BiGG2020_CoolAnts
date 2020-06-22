@@ -154,27 +154,19 @@ Connection to staton.newton.utk.edu closed.
 
 #getting the metadata and turning it into feature tables WORKED
 
-(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ scp akinkopf@staton.newton.utk.edu:/staton/projects/BiGG_CoolAnt/Metadata_SeedCoat4.txt
+
+(base) Annes-MacBook-Air-3:~ annekinkopf$ pwd
+/Users/annekinkopf
+(base) Annes-MacBook-Air-3:~ annekinkopf$ cd Desktop/TeamCoolAnt/Fungi/FungiFun
+-bash: cd: Desktop/TeamCoolAnt/Fungi/FungiFun: No such file or directory
+(base) Annes-MacBook-Air-3:~ annekinkopf$ cd Desktop/TeamCoolAnt/raw_data/Fungi/FungiFun
+(base) Annes-MacBook-Air-3:FungiFun annekinkopf$ scp akinkopf@staton.newton.utk.edu:/staton/projects/BiGG_CoolAnt/Fungi_Metadata_SeedCoat.xlsx
 usage: scp [-346BCpqrv] [-c cipher] [-F ssh_config] [-i identity_file]
            [-l limit] [-o ssh_option] [-P port] [-S program] source ... target
-(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ mkdir Metadata
-(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ rm Metadata
-rm: Metadata: is a directory
-(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ rm -r Metadata
-(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ cd TeamCoolAnt
--bash: cd: TeamCoolAnt: No such file or directory
-(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ head Metadata_SeedCoat4.txt
-head: Metadata_SeedCoat4.txt: No such file or directory
-(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ pwd
-/Users/annekinkopf/Desktop/TeamCoolAnt/raw_data/Fungi/FungiFun
-(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ cd Fungi
--bash: cd: Fungi: No such file or directory
-(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ cd ..
-(qiime2-2020.2) Annes-MacBook-Air-3:Fungi annekinkopf$ cd..
--bash: cd..: command not found
-(qiime2-2020.2) Annes-MacBook-Air-3:Fungi annekinkopf$ cd ..
-(qiime2-2020.2) Annes-MacBook-Air-3:raw_data annekinkopf$ cd Fungi
-(qiime2-2020.2) Annes-MacBook-Air-3:Fungi annekinkopf$ cd ..
-(qiime2-2020.2) Annes-MacBook-Air-3:raw_data annekinkopf$ mkdir Metadata
-(qiime2-2020.2) Annes-MacBook-Air-3:raw_data annekinkopf$ cd Metadata
-(qiime2-2020.2) Annes-MacBook-Air-3:Metadata annekinkopf$ scp akinkopf@staton.newton.utk.edu:/staton/projects/BiGG_CoolAnt/Metadata_SeedCoat4.txt .
+(base) Annes-MacBook-Air-3:FungiFun annekinkopf$ scp akinkopf@staton.newton.utk.edu:/staton/projects/BiGG_CoolAnt/Fungi_Metadata_SeedCoat.xlsx .
+akinkopf@staton.newton.utk.edu's password: 
+Fungi_Metadata_SeedCoat.xlsx                                                                         100%   14KB  99.8KB/s   00:00    
+(base) Annes-MacBook-Air-3:FungiFun annekinkopf$ ls
+Fungi_Metadata_SeedCoat.xlsx	manifest.tsv			paired-end-demux.qzv		statsF-dada2.qzv
+denoise.sh			nohup.out			reps-seqsF.qza			tableF.qza
+make_manifest.sh		paired-end-demux.qza		statsF-dada2.qza
