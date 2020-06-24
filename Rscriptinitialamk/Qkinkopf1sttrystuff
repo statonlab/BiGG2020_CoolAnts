@@ -97,9 +97,9 @@ Press the 'q' key, Control-C, or Control-D to quit. This view may no longer be a
 > --p-trim-left-r 20 \
 > --p-trunc-len-f 200 \
 > --p-trunc-len-r 200 \
-> --o-representative-sequences rep-seqsF-dada2.qza \
+> --o-representative-sequences rep2-seqsF-dada2.qza \
 > --o-table tableF-dada2.qza \
-> --o-denoising-stats statsF-dada2.qza
+> --o-denoising-stats stats2nd-dada2.qza
 
 
 
