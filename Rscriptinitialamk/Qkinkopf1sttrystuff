@@ -310,6 +310,32 @@ Saved Visualization to: core-metricsF-results/jaccard_emperor.qzv
 Saved Visualization to: core-metricsF-results/bray_curtis_emperor.qzv
 
 
+#diversity visualizations with the Kingdom Fungi Table (new output of core metrics folder, the one with no number)
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime diversity core-metrics-phylogenetic \
+> --i-phylogeny rooted-tree.qza \
+> --i-table KingdomFungiTable.qza \
+> --p-sampling-depth 1224 \
+> --m-metadata-file Fungi_Metadata_SeedCoat.txt \
+> --output-dir core-metrics-results
+Saved FeatureTable[Frequency] to: core-metrics-results/rarefied_table.qza
+Saved SampleData[AlphaDiversity] % Properties('phylogenetic') to: core-metrics-results/faith_pd_vector.qza
+Saved SampleData[AlphaDiversity] to: core-metrics-results/observed_otus_vector.qza
+Saved SampleData[AlphaDiversity] to: core-metrics-results/shannon_vector.qza
+Saved SampleData[AlphaDiversity] to: core-metrics-results/evenness_vector.qza
+Saved DistanceMatrix % Properties('phylogenetic') to: core-metrics-results/unweighted_unifrac_distance_matrix.qza
+Saved DistanceMatrix % Properties('phylogenetic') to: core-metrics-results/weighted_unifrac_distance_matrix.qza
+Saved DistanceMatrix to: core-metrics-results/jaccard_distance_matrix.qza
+Saved DistanceMatrix to: core-metrics-results/bray_curtis_distance_matrix.qza
+Saved PCoAResults to: core-metrics-results/unweighted_unifrac_pcoa_results.qza
+Saved PCoAResults to: core-metrics-results/weighted_unifrac_pcoa_results.qza
+Saved PCoAResults to: core-metrics-results/jaccard_pcoa_results.qza
+Saved PCoAResults to: core-metrics-results/bray_curtis_pcoa_results.qza
+Saved Visualization to: core-metrics-results/unweighted_unifrac_emperor.qzv
+Saved Visualization to: core-metrics-results/weighted_unifrac_emperor.qzv
+Saved Visualization to: core-metrics-results/jaccard_emperor.qzv
+Saved Visualization to: core-metrics-results/bray_curtis_emperor.qzv
+
 
 
 #taxonomic analysis to make a taxa barplot
@@ -322,4 +348,5 @@ Saved Visualization to: core-metricsF-results/bray_curtis_emperor.qzv
 Saved Visualization to: taxa-bar-plotsF.qzv
 
 
+#code for trying Alpha rareifaction
 
