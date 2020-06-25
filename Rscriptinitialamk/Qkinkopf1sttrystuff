@@ -309,3 +309,17 @@ Saved Visualization to: core-metricsF-results/weighted_unifrac_emperor.qzv
 Saved Visualization to: core-metricsF-results/jaccard_emperor.qzv
 Saved Visualization to: core-metricsF-results/bray_curtis_emperor.qzv
 
+
+
+
+#taxonomic analysis to make a taxa barplot
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime taxa barplot \
+> --i-table KingdomFungiTable.qza \
+> --i-taxonomy blasttaxonomy.qza \
+> --m-metadata-file Fungi_Metadata_SeedCoat.txt \
+> --o-visualization taxa-bar-plotsF.qzv
+Saved Visualization to: taxa-bar-plotsF.qzv
+
+
+
