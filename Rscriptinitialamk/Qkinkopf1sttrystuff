@@ -218,8 +218,8 @@ Saved FeatureData[Taxonomy] to: taxonomy.qza
 (base) Annes-MacBook-Air-3:TeamCoolAnt annekinkopf$ mkdir Unite
 (base) Annes-MacBook-Air-3:TeamCoolAnt annekinkopf$ cd Unite
 (base) Annes-MacBook-Air-3:Unite annekinkopf$ wget \
-> -O "sh_qiime_release_04.02.2020.tar.gz" \
-> "https://files.plutof.ut.ee/public/orig/98/AE/98AE96C6593FC9C52D1C46B96C2D9064291F4DBA625EF189FEC1CCAFCF4A1691.gz"
+-O "sh_qiime_release_04.02.2020.tar.gz" \
+"https://files.plutof.ut.ee/public/orig/98/AE/98AE96C6593FC9C52D1C46B96C2D9064291F4DBA625EF189FEC1CCAFCF4A1691.gz"
 
 
 #making the Unite environment
@@ -231,18 +231,18 @@ Imported sh_refs_qiime_ver8_99_04.02.2020.fasta as DNASequencesDirectoryFormat t
 #making the Unite environment
 
 (qiime2-2020.2) Annes-MacBook-Air-3:UniteQiimeData annekinkopf$ qiime tools import \
-> --type FeatureData[Taxonomy] \
-> --input-path sh_taxonomy_qiime_ver8_99_04.02.2020.txt \
-> --output-path unite-ver8-taxonomy_99_04.02.2020.qza \
-> --input-format HeaderlessTSVTaxonomyFormat
+--type FeatureData[Taxonomy] \
+--input-path sh_taxonomy_qiime_ver8_99_04.02.2020.txt \
+--output-path unite-ver8-taxonomy_99_04.02.2020.qza \
+--input-format HeaderlessTSVTaxonomyFormat
 Imported sh_taxonomy_qiime_ver8_99_04.02.2020.txt as HeaderlessTSVTaxonomyFormat to unite-ver8-taxonomy_99_04.02.2020.qza
 
 #making the Unite environment
 
 (qiime2-2020.2) Annes-MacBook-Air-3:UniteQiimeData annekinkopf$ qiime feature-classifier fit-classifier-naive-bayes \
-> --i-reference-reads unite-ver8-seqs_99_04.02.2020.qza \
-> --i-reference-taxonomy unite-ver8-taxonomy_99_04.02.2020.qza \
-> --o-classifier unite-ver8-99-classifier-04.02.2020.qza
+--i-reference-reads unite-ver8-seqs_99_04.02.2020.qza \
+--i-reference-taxonomy unite-ver8-taxonomy_99_04.02.2020.qza \
+--o-classifier unite-ver8-99-classifier-04.02.2020.qza
 Saved TaxonomicClassifier to: unite-ver8-99-classifier-04.02.2020.qza
 
 
@@ -255,8 +255,8 @@ Saved FeatureData[Taxonomy] to: taxonomy.qza
 
 (qiime2-2020.2) Annes-MacBook-Air-3:Unite annekinkopf$ cd UniteQiimeData
 (qiime2-2020.2) Annes-MacBook-Air-3:UniteQiimeData annekinkopf$ qiime metadata tabulate \
-> --m-input-file blasttaxonomy.qza \
-> --o-visualization blasttaxonomy.qzv
+--m-input-file blasttaxonomy.qza \
+--o-visualization blasttaxonomy.qzv
 Saved Visualization to: blasttaxonomy.qzv
 
 
@@ -278,18 +278,18 @@ Press the 'q' key, Control-C, or Control-D to quit. This view may no longer be a
 (qiime2-2020.2) Annes-MacBook-Air-3:Unite annekinkopf$ cd ..
 (qiime2-2020.2) Annes-MacBook-Air-3:Fungi annekinkopf$ cd FungiFun
 (qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime feature-table tabulate-seqs \
-> --i-data rep2-seqsF-dada2.qza \
-> --o-visualization rep2-seqsF-dada2.qzv
+--i-data rep2-seqsF-dada2.qza \
+--o-visualization rep2-seqsF-dada2.qzv
 Saved Visualization to: rep2-seqsF-dada2.qzv
 
 #diversity visualizations for Unite filtered data saved the new core metrics folder with "F"
 
 (qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime diversity core-metrics-phylogenetic \
-> --i-phylogeny rooted-tree.qza \
-> --i-table tableF.qza \
-> --p-sampling-depth 1224 \
-> --m-metadata-file Fungi_Metadata_SeedCoat.txt \
-> --output-dir core-metricsF-results
+--i-phylogeny rooted-tree.qza \
+--i-table tableF.qza \
+--p-sampling-depth 1224 \
+--m-metadata-file Fungi_Metadata_SeedCoat.txt \
+--output-dir core-metricsF-results
 
 Saved FeatureTable[Frequency] to: core-metricsF-results/rarefied_table.qza
 Saved SampleData[AlphaDiversity] % Properties('phylogenetic') to: core-metricsF-results/faith_pd_vector.qza
@@ -313,11 +313,11 @@ Saved Visualization to: core-metricsF-results/bray_curtis_emperor.qzv
 #diversity visualizations with the Kingdom Fungi Table (new output of core metrics folder, the one with no number)
 
 (qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime diversity core-metrics-phylogenetic \
-> --i-phylogeny rooted-tree.qza \
-> --i-table KingdomFungiTable.qza \
-> --p-sampling-depth 1224 \
-> --m-metadata-file Fungi_Metadata_SeedCoat.txt \
-> --output-dir core-metrics-results
+--i-phylogeny rooted-tree.qza \
+--i-table KingdomFungiTable.qza \
+--p-sampling-depth 1224 \
+--m-metadata-file Fungi_Metadata_SeedCoat.txt \
+--output-dir core-metrics-results
 Saved FeatureTable[Frequency] to: core-metrics-results/rarefied_table.qza
 Saved SampleData[AlphaDiversity] % Properties('phylogenetic') to: core-metrics-results/faith_pd_vector.qza
 Saved SampleData[AlphaDiversity] to: core-metrics-results/observed_otus_vector.qza
@@ -341,12 +341,32 @@ Saved Visualization to: core-metrics-results/bray_curtis_emperor.qzv
 #taxonomic analysis to make a taxa barplot
 
 (qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime taxa barplot \
-> --i-table KingdomFungiTable.qza \
-> --i-taxonomy blasttaxonomy.qza \
-> --m-metadata-file Fungi_Metadata_SeedCoat.txt \
-> --o-visualization taxa-bar-plotsF.qzv
+--i-table KingdomFungiTable.qza \
+--i-taxonomy blasttaxonomy.qza \
+--m-metadata-file Fungi_Metadata_SeedCoat.txt \
+--o-visualization taxa-bar-plotsF.qzv
 Saved Visualization to: taxa-bar-plotsF.qzv
 
 
 #code for trying Alpha rareifaction
+
+#alpha rarefaction with a max and min depth (was not used, only as a test)
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime diversity alpha-rarefaction \
+--i-table KingdomFungiTable.qza \
+--i-phylogeny rooted-tree.qza \
+--p-max-depth 1224 \
+--p-min-depth 353 \
+--m-metadata-file Fungi_Metadata_SeedCoat.txt \
+--o-visualization alpha-rarefaction.qzv
+Saved Visualization to: alpha-rarefaction.qzv
+
+#FINAL Alpha rarefaction
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime diversity alpha-rarefaction \
+--i-table KingdomFungiTable.qza \
+--i-phylogeny rooted-tree.qza \
+--p-max-depth 1224\
+--m-metadata-file Fungi_Metadata_SeedCoat.txt \
+--o-visualization alpha-rarefaction2.qzv
+Saved Visualization to: alpha-rarefaction2.qzv
 
