@@ -370,3 +370,116 @@ Saved Visualization to: alpha-rarefaction.qzv
 --o-visualization alpha-rarefaction2.qzv
 Saved Visualization to: alpha-rarefaction2.qzv
 
+
+
+
+
+#getting data available to upload to funguild
+
+
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime tools export \
+> --input-path tableF.qza \
+> --output-path 
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime tools export --input-path tableF.qza --output-path ./
+Exported tableF.qza as BIOMV210DirFmt to directory ./
+	
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime tools export --input-path tableF.qza --output-path exported
+Exported tableF.qza as BIOMV210DirFmt to directory exported
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ ls
+Fungi_Metadata_SeedCoat.txt			exported					sh_refs_qiime_ver8_dynamic_04.02.2020.fasta
+Fungi_Metadata_SeedCoat.xlsx			feature-table.biom				sh_taxonomy_qiime_ver8_97_04.02.2020.txt
+KingdomFungiTable.qza				make_manifest.sh				sh_taxonomy_qiime_ver8_99_04.02.2020.txt
+KingdomFungiTable.qzv				manifest.tsv					sh_taxonomy_qiime_ver8_dynamic_04.02.2020.txt
+QIIME_ITS_readme_04.02.2020.pdf			masked-aligned-rep-seqs.qza			stats2nd-dada2.qza
+aligned-rep-seqs.qza				nohup.out					statsF-dada2.qza
+alpha-rarefaction.qzv				paired-end-demux.qza				statsF-dada2.qzv
+alpha-rarefaction2.qzv				paired-end-demux.qzv				tableF-dada2.qza
+blasttaxonomy.qza				rep-seqsF.qza					tableF.qza
+blasttaxonomy.qzv				rep-seqsF.qzv					tableF.qzv
+core-metrics-results				rep2-seqsF-dada2.qza				taxa-bar-plotsF.qzv
+core-metrics1-results				rep2-seqsF-dada2.qzv				unite-ver8-99-classifier-04.02.2020.qza
+core-metrics2-results				rooted-tree.qza					unite-ver8-seqs_99_04.02.2020.qza
+denoise.sh					sh_refs_qiime_ver8_97_04.02.2020.fasta		unite-ver8-taxonomy_99_04.02.2020.qza
+developer					sh_refs_qiime_ver8_99_04.02.2020.fasta		unrooted-tree.qza
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ cd exported
+(qiime2-2020.2) Annes-MacBook-Air-3:exported annekinkopf$ ls
+feature-table.biom
+(qiime2-2020.2) Annes-MacBook-Air-3:exported annekinkopf$ cd ..
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime tools export --input-path blasttaxonomy.qza --output-path exported
+Exported blasttaxonomy.qza as TSVTaxonomyDirectoryFormat to directory exported
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ cd exported
+(qiime2-2020.2) Annes-MacBook-Air-3:exported annekinkopf$ ls
+feature-table.biom	taxonomy.tsv
+(qiime2-2020.2) Annes-MacBook-Air-3:exported annekinkopf$ cp taxonomy.tsv biom-taxonomy.tsv
+(qiime2-2020.2) Annes-MacBook-Air-3:exported annekinkopf$ ls
+biom-taxonomy.tsv	feature-table.biom	taxonomy.tsv
+(qiime2-2020.2) Annes-MacBook-Air-3:exported annekinkopf$ vi biom-taxonomy.tsv
+(qiime2-2020.2) Annes-MacBook-Air-3:exported annekinkopf$ biom add-metadata -i exported/feature-table.biom -o table-with-taxonomy.biom --observation-metadata-fp biom-taxonomy.tsv --sc-separated taxonomy
+Usage: biom add-metadata [OPTIONS]
+Try "biom add-metadata -h" for help.
+
+Error: Invalid value for "-i" / "--input-fp": File "exported/feature-table.biom" does not exist.
+(qiime2-2020.2) Annes-MacBook-Air-3:exported annekinkopf$ cd ..
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ biom add-metadata -i exported/feature-table.biom -o table-with-taxonomy.biom --observation-metadata-fp biom-taxonomy.tsv --sc-separated taxonomy
+Usage: biom add-metadata [OPTIONS]
+Try "biom add-metadata -h" for help.
+
+Error: Invalid value for "--observation-metadata-fp": File "biom-taxonomy.tsv" does not exist.
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ biom add-metadata -i exported/feature-table.biom -o table-with-taxonomy.biom
+Traceback (most recent call last):
+  File "/Users/annekinkopf/opt/miniconda3/envs/qiime2-2020.2/bin/biom", line 11, in <module>
+    sys.exit(cli())
+  File "/Users/annekinkopf/opt/miniconda3/envs/qiime2-2020.2/lib/python3.6/site-packages/click/core.py", line 764, in __call__
+    return self.main(*args, **kwargs)
+  File "/Users/annekinkopf/opt/miniconda3/envs/qiime2-2020.2/lib/python3.6/site-packages/click/core.py", line 717, in main
+    rv = self.invoke(ctx)
+  File "/Users/annekinkopf/opt/miniconda3/envs/qiime2-2020.2/lib/python3.6/site-packages/click/core.py", line 1137, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+  File "/Users/annekinkopf/opt/miniconda3/envs/qiime2-2020.2/lib/python3.6/site-packages/click/core.py", line 956, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+  File "/Users/annekinkopf/opt/miniconda3/envs/qiime2-2020.2/lib/python3.6/site-packages/click/core.py", line 555, in invoke
+    return callback(*args, **kwargs)
+  File "/Users/annekinkopf/opt/miniconda3/envs/qiime2-2020.2/lib/python3.6/site-packages/biom/cli/metadata_adder.py", line 107, in add_metadata
+    float_fields, sample_header, observation_header)
+  File "/Users/annekinkopf/opt/miniconda3/envs/qiime2-2020.2/lib/python3.6/site-packages/biom/cli/metadata_adder.py", line 145, in _add_metadata
+    raise ValueError('Must specify sample_metadata and/or '
+ValueError: Must specify sample_metadata and/or observation_metadata.
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ biom add-metadata -i exported/feature-table.biom -o table-with-taxonomy.biom --observation-metadata-fp exported/biom-taxonomy.tsv --sc-separated taxonomy
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ ls
+Fungi_Metadata_SeedCoat.txt			feature-table.biom				sh_taxonomy_qiime_ver8_99_04.02.2020.txt
+Fungi_Metadata_SeedCoat.xlsx			make_manifest.sh				sh_taxonomy_qiime_ver8_dynamic_04.02.2020.txt
+KingdomFungiTable.qza				manifest.tsv					stats2nd-dada2.qza
+KingdomFungiTable.qzv				masked-aligned-rep-seqs.qza			statsF-dada2.qza
+QIIME_ITS_readme_04.02.2020.pdf			nohup.out					statsF-dada2.qzv
+aligned-rep-seqs.qza				paired-end-demux.qza				table-with-taxonomy.biom
+alpha-rarefaction.qzv				paired-end-demux.qzv				tableF-dada2.qza
+alpha-rarefaction2.qzv				rep-seqsF.qza					tableF.qza
+blasttaxonomy.qza				rep-seqsF.qzv					tableF.qzv
+blasttaxonomy.qzv				rep2-seqsF-dada2.qza				taxa-bar-plotsF.qzv
+core-metrics-results				rep2-seqsF-dada2.qzv				unite-ver8-99-classifier-04.02.2020.qza
+core-metrics1-results				rooted-tree.qza					unite-ver8-seqs_99_04.02.2020.qza
+core-metrics2-results				sh_refs_qiime_ver8_97_04.02.2020.fasta		unite-ver8-taxonomy_99_04.02.2020.qza
+denoise.sh					sh_refs_qiime_ver8_99_04.02.2020.fasta		unrooted-tree.qza
+developer					sh_refs_qiime_ver8_dynamic_04.02.2020.fasta
+exported					sh_taxonomy_qiime_ver8_97_04.02.2020.txt
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ biom convert -i table-with-taxonomy.biom -o table-with-taxonomy.tsv --to-tsv --header-key taxonomy
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ ls
+Fungi_Metadata_SeedCoat.txt			feature-table.biom				sh_taxonomy_qiime_ver8_99_04.02.2020.txt
+Fungi_Metadata_SeedCoat.xlsx			make_manifest.sh				sh_taxonomy_qiime_ver8_dynamic_04.02.2020.txt
+KingdomFungiTable.qza				manifest.tsv					stats2nd-dada2.qza
+KingdomFungiTable.qzv				masked-aligned-rep-seqs.qza			statsF-dada2.qza
+QIIME_ITS_readme_04.02.2020.pdf			nohup.out					statsF-dada2.qzv
+aligned-rep-seqs.qza				paired-end-demux.qza				table-with-taxonomy.biom
+alpha-rarefaction.qzv				paired-end-demux.qzv				table-with-taxonomy.tsv
+alpha-rarefaction2.qzv				rep-seqsF.qza					tableF-dada2.qza
+blasttaxonomy.qza				rep-seqsF.qzv					tableF.qza
+blasttaxonomy.qzv				rep2-seqsF-dada2.qza				tableF.qzv
+core-metrics-results				rep2-seqsF-dada2.qzv				taxa-bar-plotsF.qzv
+core-metrics1-results				rooted-tree.qza					unite-ver8-99-classifier-04.02.2020.qza
+core-metrics2-results				sh_refs_qiime_ver8_97_04.02.2020.fasta		unite-ver8-seqs_99_04.02.2020.qza
+denoise.sh					sh_refs_qiime_ver8_99_04.02.2020.fasta		unite-ver8-taxonomy_99_04.02.2020.qza
+developer					sh_refs_qiime_ver8_dynamic_04.02.2020.fasta	unrooted-tree.qza
+exported					sh_taxonomy_qiime_ver8_97_04.02.2020.txt
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ biom convert -i table-with-taxonomy.biom -o table-with-taxonomy.txt --to-tsv --header-key taxonomy
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ ls
