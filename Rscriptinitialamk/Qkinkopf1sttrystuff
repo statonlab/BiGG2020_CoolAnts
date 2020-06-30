@@ -337,6 +337,56 @@ Saved Visualization to: core-metrics-results/jaccard_emperor.qzv
 Saved Visualization to: core-metrics-results/bray_curtis_emperor.qzv
 
 
+#(6/30) Trying using 97 instead of 99 and making the UNITE environment
+
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime tools import \
+> --type FeatureData[Sequence] \
+> --input-path sh_refs_qiime_ver8_97_04.02.2020.fasta \
+> --output-path unite-ver8-seqs_97_04.02.2020.qza 
+Imported sh_refs_qiime_ver8_97_04.02.2020.fasta as DNASequencesDirectoryFormat to unite-ver8-seqs_97_04.02.2020.qza
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime tools import \
+> --type FeatureData[Taxonomy] \
+> --input-path sh_taxonomy_qiime_ver8_97_04.02.2020.txt \
+> --output-path unite-ver8-taxonomy_97_04.02.2020.qza \
+> --input-format HeaderlessTSVTaxonomyFormat
+Imported sh_taxonomy_qiime_ver8_97_04.02.2020.txt as HeaderlessTSVTaxonomyFormat to unite-ver8-taxonomy_97_04.02.2020.qza
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime feature-classifier fit-classifier-naive-bayes \
+> --i-reference-reads unite-ver8-seqs_97_04.02.2020.qza \
+> --i-reference-taxonomy unite-ver8-taxonomy_97_04.02.2020.qza \
+> --o-classifier unite-ver8-97-classifier-04.02.2020.qza
+Saved TaxonomicClassifier to: unite-ver8-97-classifier-04.02.2020.qza
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime feature-classifier classify-sklearn
+--i-classifier unite-ver8-97-classifier-04.02.2020.qza \
+--i-reads rep2-seqsF-dada2.qza \
+--o-classification blasttaxonomy97.qza
+Saved FeatureData[Taxonomy] to: blasttaxonomy97.qza
+
+#make blasttaxonomy97.qza a qzv file that is viewable
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime metadata tabulate \
+> --m-input-file blasttaxonomy97.qza \
+> --o-visualization blasttaxonomy97.qzv
+Saved Visualization to: blasttaxonomy97.qzv
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime taxa filter-table \
+> --i-table tableF-dada2.qza \
+> --i-taxonomy blasttaxonomy97.qza \
+> --p-include k__Fungi \
+> --o-filtered-table KingdomFungiTable97.qza
+Saved FeatureTable[Frequency] to: KingdomFungiTable97.qza
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime feature-table summarize \
+> --i-table KingdomFungiTable97.qza \
+> --o-visualization KingdomFungiTable97.qzv \
+> --m-sample-metadata-file Fungi_Metadata_SeedCoat.txt
+Saved Visualization to: KingdomFungiTable97.qzv
+
+#end of (6/30)
+
+
 
 #taxonomic analysis to make a taxa barplot
 
