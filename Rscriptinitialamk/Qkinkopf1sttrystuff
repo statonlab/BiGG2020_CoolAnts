@@ -213,7 +213,7 @@ Saved FeatureData[Taxonomy] to: taxonomy.qza
 
 
 
-#Command for installing the Unite filter
+#Original/prelimnary instillation of the Unite filter
 
 (base) Annes-MacBook-Air-3:TeamCoolAnt annekinkopf$ mkdir Unite
 (base) Annes-MacBook-Air-3:TeamCoolAnt annekinkopf$ cd Unite
@@ -225,7 +225,10 @@ Saved FeatureData[Taxonomy] to: taxonomy.qza
 #making the Unite environment
 
 (qiime2-2020.2) Annes-MacBook-Air-3:Unite annekinkopf$ cd sh_qiime_release_04.02.2020
-(qiime2-2020.2) Annes-MacBook-Air-3:sh_qiime_release_04.02.2020 annekinkopf$ qiime tools import --type FeatureData[Sequence] --input-path sh_refs_qiime_ver8_99_04.02.2020.fasta --output-path unite-ver8-seqs_99_04.02.2020.qza
+(qiime2-2020.2) Annes-MacBook-Air-3:sh_qiime_release_04.02.2020 annekinkopf$ qiime tools import \
+--type FeatureData[Sequence] \
+--input-path sh_refs_qiime_ver8_99_04.02.2020.fasta \
+--output-path unite-ver8-seqs_99_04.02.2020.qza
 Imported sh_refs_qiime_ver8_99_04.02.2020.fasta as DNASequencesDirectoryFormat to unite-ver8-seqs_99_04.02.2020.qza
 
 #making the Unite environment
@@ -250,7 +253,10 @@ Saved TaxonomicClassifier to: unite-ver8-99-classifier-04.02.2020.qza
 
 #make the taxonomy and viewable form with Unite filtered fungi
 
-(qiime2-2020.2) Annes-MacBook-Air-3:UniteQiimeData annekinkopf$ qiime feature-classifier classify-sklearn --i-classifier unite-ver8-99-classifier-04.02.2020.qza --i-reads rep-seqsF.qza --o-classification taxonomy.qza
+(qiime2-2020.2) Annes-MacBook-Air-3:UniteQiimeData annekinkopf$ qiime feature-classifier classify-sklearn \
+--i-classifier unite-ver8-99-classifier-04.02.2020.qza \
+--i-reads rep-seqsF.qza \
+--o-classification taxonomy.qza
 Saved FeatureData[Taxonomy] to: taxonomy.qza
 
 (qiime2-2020.2) Annes-MacBook-Air-3:Unite annekinkopf$ cd UniteQiimeData
@@ -258,6 +264,39 @@ Saved FeatureData[Taxonomy] to: taxonomy.qza
 --m-input-file blasttaxonomy.qza \
 --o-visualization blasttaxonomy.qzv
 Saved Visualization to: blasttaxonomy.qzv
+
+
+
+
+#making updated UNITE environment with 99 (update of preliminary that did not use rep2-seqsF-dada2.qza)
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime feature-classifier classify-sklearn \
+--i-classifier unite-ver8-99-classifier-04.02.2020.qza \
+--i-reads rep2-seqsF-dada2.qza \
+--o-classification blasttaxonomy99.qza
+Saved FeatureData[Taxonomy] to: blasttaxonomy99.qza
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime taxa filter-table \
+> --i-table tableF-dada2.qza \
+> --i-taxonomy blasttaxonomy99.qza \
+> --p-include k__Fungi \
+> --o-filtered-table KingdomFungiTable99.qza
+Saved FeatureTable[Frequency] to: KingdomFungiTable99.qza
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime feature-table summarize \
+> --i-table KingdomFungiTable99.qza \
+> --o-visualization KingdomFungiTable99.qzv \
+> --m-sample-metadata-file Fungi_Metadata_SeedCoat.txt
+Saved Visualization to: KingdomFungiTable99.qzv
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ #making the taxa barplots for visualization
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime taxa barplot \
+> --i-table tableF.qza \
+> --i-taxonomy blasttaxonomy99.qza \
+> --m-metadata-file Fungi_Metadata_SeedCoat.txt \
+> --o-visualization taxa-bar-plotsF99.qzv
+Saved Visualization to: taxa-bar-plotsF99.qzv
+
 
 
 
