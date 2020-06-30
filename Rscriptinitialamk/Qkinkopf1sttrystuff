@@ -384,7 +384,15 @@ Saved FeatureTable[Frequency] to: KingdomFungiTable97.qza
 > --m-sample-metadata-file Fungi_Metadata_SeedCoat.txt
 Saved Visualization to: KingdomFungiTable97.qzv
 
-#end of (6/30)
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ #make the taxa barplots for visualizations
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime taxa barplot \
+> --i-table tableF.qza \
+> --i-taxonomy blasttaxonomy97.qza \
+> --m-metadata-file Fungi_Metadata_SeedCoat.txt \
+> --o-visualization taxa-bar-plotsF97.qza
+Saved Visualization to: taxa-bar-plotsF97.qza.qzv
+
+#end of (6/30) test on 97
 
 
 
