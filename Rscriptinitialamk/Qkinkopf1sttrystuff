@@ -471,9 +471,36 @@ Saved Visualization to: alpha-rarefaction2.qzv
 
 
 
-#getting data available to upload to funguild
+#Exporting and modifying BIOM tables then putting into txt form (7/1)
 
 
+(qiime2-2020.2) Annes-MacBook-Air-3:~ annekinkopf$ cd Desktop/TeamCoolAnt/raw_data/Fungi/FungiFun
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime tools export \ 
+--input-path tableF.qza \ 
+--output-path exported2
+Exported tableF.qza as BIOMV210DirFmt to directory exported2
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime tools export \ 
+--input-path blasttaxonomy97.qza \
+--output-path exported2
+Exported blasttaxonomy97.qza as TSVTaxonomyDirectoryFormat to directory exported2
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ cd exported2
+(qiime2-2020.2) Annes-MacBook-Air-3:exported2 annekinkopf$ cp taxonomy.tsv biom-taxonomy97.tsv
+(qiime2-2020.2) Annes-MacBook-Air-3:exported2 annekinkopf$ vi biom-taxonomy97.tsv
+(qiime2-2020.2) Annes-MacBook-Air-3:exported2 annekinkopf$ biom add-metadata -i feature-table.biom -o table-with-taxonomy97.biom \
+--observation-metadata-fp biom-taxonomy97.tsv \
+--sc-separated taxonomy
+
+(qiime2-2020.2) Annes-MacBook-Air-3:exported2 annekinkopf$ biom convert -i table-with-taxonomy97.biom -o table-with-taxonomy97.txt \
+--to-tsv \
+--header-key taxonomy
+
+
+
+
+
+#Exporting and modifying BIOM tables then putting into txt form orginial attempt (6/29)
 
 (qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime tools export \
 > --input-path tableF.qza \
