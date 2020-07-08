@@ -1,0 +1,611 @@
+#downloading fungi data pathway
+
+#finding pathway of where to store data
+(base) Annes-MacBook-Air-3:TeamCoolAnt annekinkopf$ pwd
+/Users/annekinkopf/Desktop/TeamCoolAnt
+#choosing the raw_data folder to put stuff in
+(base) Annes-MacBook-Air-3:TeamCoolAnt annekinkopf$ cd raw_data
+(base) Annes-MacBook-Air-3:raw_data annekinkopf$ ls
+Fungi
+#removing fungi folder and then making a new one for replacing old data
+(base) Annes-MacBook-Air-3:raw_data annekinkopf$ rm Fungi
+rm: Fungi: is a directory
+(base) Annes-MacBook-Air-3:raw_data annekinkopf$ rm dir Fungi
+rm: dir: No such file or directory
+rm: Fungi: is a directory
+(base) Annes-MacBook-Air-3:raw_data annekinkopf$ rmdir Fungi
+rmdir: Fungi: Directory not empty
+(base) Annes-MacBook-Air-3:raw_data annekinkopf$ rm -r Fungi
+(base) Annes-MacBook-Air-3:raw_data annekinkopf$ mkdir Fungi
+(base) Annes-MacBook-Air-3:raw_data annekinkopf$ cd Fungi
+#to download data into folder path
+scp -r akinkopf@staton.newton.utk.edu:/staton/projects/BiGG_CoolAnt/raw_data/Fungi .
+
+#for broken pipes to speed things along and rsync so that it won't double download files
+caffeinate rsync -avz akinkopf@staton.newton.utk.edu:/staton/projects/BiGG__CoolAnt/raw_data/Fungi/*gz .
+
+#will allow you to look at stuff you just downloaded
+ls -lh
+
+
+
+
+#Importing demultiplexed fastq files for fungi data (making a filter to clean data)
+
+(base) Annes-MacBook-Air-3:Fungi annekinkopf$ mkdir FungiFun
+(base) Annes-MacBook-Air-3:Fungi annekinkopf$ cd FungiFun
+(base) Annes-MacBook-Air-3:FungiFun annekinkopf$ vi make_manifest.sh
+(base) Annes-MacBook-Air-3:FungiFun annekinkopf$ bash make_manifest.sh >> manifest.tsv
+(base) Annes-MacBook-Air-3:FungiFun annekinkopf$ ls
+make_manifest.sh	manifest.tsv
+(base) Annes-MacBook-Air-3:FungiFun annekinkopf$ # load qiime environment
+(base) Annes-MacBook-Air-3:FungiFun annekinkopf$ conda activate qiime2-2020.2
+
+#run the import command
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime tools import \
+> --type 'SampleData[PairedEndSequencesWithQuality]' \
+> --input-path manifest.tsv \
+> --output-path paired-end-demux.qza \
+> --input-format PairedEndFastqManifestPhred33V2
+Imported manifest.tsv as PairedEndFastqManifestPhred33V2 to paired-end-demux.qza
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ ls
+make_manifest.sh	manifest.tsv		paired-end-demux.qza
+
+
+#testing out denoising on the fungi
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime dada2 paired end denoise \
+> --i-demultiplexed-seqs paired-end-demux.qza \
+> --p-trim-left 20 \
+> --p-trunc-len 200 \
+> qiime dada2 paired end denoise --i-demultiplexed-seqs paired-end-demux.qza --p-trim-left 20 --p-trunc-len 200 \
+> qiime dada2 paired end denoise
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ ls
+make_manifest.sh	manifest.tsv		paired-end-demux.qza
+
+#making a visualization as a qzv file to determine where to cut sequences for the trim and trunc
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime demux summarize \
+> --i-data paired-end-demux.qza \
+> --o-visualization paired-end-demux.qzv
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime demux summarize \
+> --i-data paired-end-demux.qza \
+> --o-visualization paired-end-demux.qzv
+Saved Visualization to: paired-end-demux.qzv
+
+#this "head" command allows to see some things in file (good for making sure you're using the right file)
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ head manifest.tsv
+sample-id	forward-absolute-filepath	reverse-absolute-filepath
+1stAMP-NTC_S1_L001	/Users/annekinkopf/Desktop/TeamCoolAnt/raw_data/Fungi/FungiFun/../1stAMP-NTC_S1_L001_R1_001.fastq.gz	/Users/annekinkopf/Desktop/TeamCoolAnt/raw_data/Fungi/FungiFun/../1stAMP-NTC_S1_L001_R2_001.fastq.gz
+2ndAMP-NTC_S2_L001	/Users/annekinkopf/Desktop/TeamCoolAnt/raw_data/Fungi/FungiFun/../2ndAMP-NTC_S2_L001_R1_001.fastq.gz	/Users/annekinkopf/Desktop/TeamCoolAnt/raw_data/Fungi/FungiFun/../2ndAMP-NTC_S2_L001_R2_001.fastq.gz
+BRA10_S108_L001	/Users/annekinkop........................etc
+
+
+#tools view allows to see qza file instead of clicking and dragging
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime tools view paired-end-demux.qzv
+Press the 'q' key, Control-C, or Control-D to quit. This view may no longer be accessible or work correctly after quitting.
+
+
+#denoising final code for fungi file
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime dada2 denoise-paired \
+> --i-demultiplexed-seqs paired-end-demux.qza \
+> --p-trim-left-f 20 \
+> --p-trim-left-r 20 \
+> --p-trunc-len-f 200 \
+> --p-trunc-len-r 200 \
+> --o-representative-sequences rep2-seqsF-dada2.qza \
+> --o-table tableF-dada2.qza \
+> --o-denoising-stats stats2nd-dada2.qza
+
+
+
+
+
+#making the metadata stuff
+
+Last login: Mon Jun 15 11:21:48 on ttys000
+(base) Annes-MacBook-Air-3:~ annekinkopf$ ssh akinkopf@staton.newton.utk.edu
+akinkopf@staton.newton.utk.edu's password: 
+Last login: Thu Jun 11 13:38:58 2020 from 40.136.110.145
+(base) [akinkopf@staton ~]$ ls
+(base) [akinkopf@staton ~]$ pwd
+/home/akinkopf
+(base) [akinkopf@staton ~]$ cd Metadata_SeedCoat.csv
+-bash: cd: Metadata_SeedCoat.csv: No such file or directory
+(base) [akinkopf@staton ~]$ cd Metadata_SeedCoat
+-bash: cd: Metadata_SeedCoat: No such file or directory
+(base) [akinkopf@staton ~]$ wget \
+> -O "sample-metadata.tsv" \
+> ^C
+(base) [akinkopf@staton ~]$ wget \
+> -O "Metadata_SeedCoat.tsv" \
+> "https://docs.google.com/spreadsheets/d/15Fd5v3k4CQXLYjMXMST-nzrw8BO4VjqNVA5BqSV7LZw/edit#gid=364114895"
+--2020-06-18 16:25:04--  https://docs.google.com/spreadsheets/d/15Fd5v3k4CQXLYjMXMST-nzrw8BO4VjqNVA5BqSV7LZw/edit
+Resolving docs.google.com (docs.google.com)... 173.194.219.138, 173.194.219.101, 173.194.219.100, ...
+Connecting to docs.google.com (docs.google.com)|173.194.219.138|:443... connected.
+HTTP request sent, awaiting response... 302 Moved Temporarily
+Location: https://accounts.google.com/ServiceLogin?service=wise&passive=1209600&continue=https://docs.google.com/spreadsheets/d/15Fd5v3k4CQXLYjMXMST-nzrw8BO4VjqNVA5BqSV7LZw/edit&followup=https://docs.google.com/spreadsheets/d/15Fd5v3k4CQXLYjMXMST-nzrw8BO4VjqNVA5BqSV7LZw/edit&ltmpl=sheets [following]
+--2020-06-18 16:25:05--  https://accounts.google.com/ServiceLogin?service=wise&passive=1209600&continue=https://docs.google.com/spreadsheets/d/15Fd5v3k4CQXLYjMXMST-nzrw8BO4VjqNVA5BqSV7LZw/edit&followup=https://docs.google.com/spreadsheets/d/15Fd5v3k4CQXLYjMXMST-nzrw8BO4VjqNVA5BqSV7LZw/edit&ltmpl=sheets
+Resolving accounts.google.com (accounts.google.com)... 172.217.215.84, 2607:f8b0:4002:c0f::54
+Connecting to accounts.google.com (accounts.google.com)|172.217.215.84|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: unspecified [text/html]
+Saving to: ‘Metadata_SeedCoat.tsv’
+
+Metadata_SeedCoat.t     [ <=>                ]  58.29K  --.-KB/s    in 0.02s   
+
+2020-06-18 16:25:05 (3.11 MB/s) - ‘Metadata_SeedCoat.tsv’ saved [59685]
+
+(base) [akinkopf@staton ~]$ ls
+Metadata_SeedCoat.tsv
+(base) [akinkopf@staton ~]$ qiime feature-table summarize \
+> --i-table tableF.qza \
+> --o-visualization tableF.qzv \
+> --m-sample-metadata-file Metadata_SeedCoat.tsv
+-bash: qiime: command not found
+(base) [akinkopf@staton ~]$ logout
+Connection to staton.newton.utk.edu closed.
+(base) Annes-MacBook-Air-3:~ annekinkopf$ 
+
+
+#getting the metadata and turning it into feature tables WORKED (the "." helps get it to the place you need in less steps)
+
+
+
+(base) Annes-MacBook-Air-3:~ annekinkopf$ cd Desktop/TeamCoolAnt/raw_data/Fungi/FungiFun
+(base) Annes-MacBook-Air-3:FungiFun annekinkopf$ scp akinkopf@staton.newton.utk.edu:/staton/projects/BiGG_CoolAnt/Fungi_Metadata_SeedCoat.xlsx
+usage: scp [-346BCpqrv] [-c cipher] [-F ssh_config] [-i identity_file]
+           [-l limit] [-o ssh_option] [-P port] [-S program] source ... target
+(base) Annes-MacBook-Air-3:FungiFun annekinkopf$ scp akinkopf@staton.newton.utk.edu:/staton/projects/BiGG_CoolAnt/Fungi_Metadata_SeedCoat.xlsx .
+akinkopf@staton.newton.utk.edu's password: 
+Fungi_Metadata_SeedCoat.xlsx                                                                         100%   14KB  99.8KB/s   00:00    
+(base) Annes-MacBook-Air-3:FungiFun annekinkopf$ ls
+Fungi_Metadata_SeedCoat.xlsx	manifest.tsv			paired-end-demux.qzv		statsF-dada2.qzv
+denoise.sh			nohup.out			reps-seqsF.qza			tableF.qza
+make_manifest.sh		paired-end-demux.qza		statsF-dada2.qza
+
+#code for making UNITE for taxonomic analysis
+
+
+(qiime2-2020.2) Annes-MacBook-Air-3:TeamCoolAnt annekinkopf$ cd raw_data
+(qiime2-2020.2) Annes-MacBook-Air-3:raw_data annekinkopf$ cd Fungi
+(qiime2-2020.2) Annes-MacBook-Air-3:Fungi annekinkopf$ cd Unite
+(qiime2-2020.2) Annes-MacBook-Air-3:Unite annekinkopf$ cd sh_qiime_release_04.02.2020
+(qiime2-2020.2) Annes-MacBook-Air-3:sh_qiime_release_04.02.2020 annekinkopf$ qiime tools import --type FeatureData[Sequence] --input-path sh_refs_qiime_ver8_99_04.02.2020.fasta --output-path unite-ver8-seqs_99_04.02.2020.qza
+Imported sh_refs_qiime_ver8_99_04.02.2020.fasta as DNASequencesDirectoryFormat to unite-ver8-seqs_99_04.02.2020.qza
+
+(qiime2-2020.2) Annes-MacBook-Air-3:sh_qiime_release_04.02.2020 annekinkopf$ cd ..
+(qiime2-2020.2) Annes-MacBook-Air-3:Unite annekinkopf$ cd UniteQiimeData
+(qiime2-2020.2) Annes-MacBook-Air-3:UniteQiimeData annekinkopf$ qiime tools import \
+> --type FeatureData[Taxonomy] \
+> --input-path sh_taxonomy_qiime_ver8_99_04.02.2020.txt \
+> --output-path unite-ver8-taxonomy_99_04.02.2020.qza \
+> --input-format HeaderlessTSVTaxonomyFormat
+Imported sh_taxonomy_qiime_ver8_99_04.02.2020.txt as HeaderlessTSVTaxonomyFormat to unite-ver8-taxonomy_99_04.02.2020.qza
+
+(qiime2-2020.2) Annes-MacBook-Air-3:UniteQiimeData annekinkopf$ qiime feature-classifier fit-classifier-naive-bayes \
+> --i-reference-reads unite-ver8-seqs_99_04.02.2020.qza \
+> --i-reference-taxonomy unite-ver8-taxonomy_99_04.02.2020.qza \
+> --o-classifier unite-ver8-99-classifier-04.02.2020.qza
+Saved TaxonomicClassifier to: unite-ver8-99-classifier-04.02.2020.qza
+
+(qiime2-2020.2) Annes-MacBook-Air-3:Fungi annekinkopf$ cd Unite
+(qiime2-2020.2) Annes-MacBook-Air-3:Unite annekinkopf$ cd UniteQiimeData
+(qiime2-2020.2) Annes-MacBook-Air-3:UniteQiimeData annekinkopf$ qiime feature-classifier classify-sklearn --i-classifier unite-ver8-99-classifier-04.02.2020.qza --i-reads rep-seqsF.qza --o-classification taxonomy.qza
+Saved FeatureData[Taxonomy] to: taxonomy.qza
+#I changed the name to blasttaxonomy.qza
+
+#next is to continue with the moving pictures tutorial for taxonomic assignment/analysis
+
+
+
+
+
+
+
+
+
+
+
+
+
+#Original/prelimnary instillation of the Unite filter
+
+(base) Annes-MacBook-Air-3:TeamCoolAnt annekinkopf$ mkdir Unite
+(base) Annes-MacBook-Air-3:TeamCoolAnt annekinkopf$ cd Unite
+(base) Annes-MacBook-Air-3:Unite annekinkopf$ wget \
+-O "sh_qiime_release_04.02.2020.tar.gz" \
+"https://files.plutof.ut.ee/public/orig/98/AE/98AE96C6593FC9C52D1C46B96C2D9064291F4DBA625EF189FEC1CCAFCF4A1691.gz"
+
+
+#making the Unite environment
+
+(qiime2-2020.2) Annes-MacBook-Air-3:Unite annekinkopf$ cd sh_qiime_release_04.02.2020
+(qiime2-2020.2) Annes-MacBook-Air-3:sh_qiime_release_04.02.2020 annekinkopf$ qiime tools import \
+--type FeatureData[Sequence] \
+--input-path sh_refs_qiime_ver8_99_04.02.2020.fasta \
+--output-path unite-ver8-seqs_99_04.02.2020.qza
+Imported sh_refs_qiime_ver8_99_04.02.2020.fasta as DNASequencesDirectoryFormat to unite-ver8-seqs_99_04.02.2020.qza
+
+#making the Unite environment
+
+(qiime2-2020.2) Annes-MacBook-Air-3:UniteQiimeData annekinkopf$ qiime tools import \
+--type FeatureData[Taxonomy] \
+--input-path sh_taxonomy_qiime_ver8_99_04.02.2020.txt \
+--output-path unite-ver8-taxonomy_99_04.02.2020.qza \
+--input-format HeaderlessTSVTaxonomyFormat
+Imported sh_taxonomy_qiime_ver8_99_04.02.2020.txt as HeaderlessTSVTaxonomyFormat to unite-ver8-taxonomy_99_04.02.2020.qza
+
+#making the Unite environment
+
+(qiime2-2020.2) Annes-MacBook-Air-3:UniteQiimeData annekinkopf$ qiime feature-classifier fit-classifier-naive-bayes \
+--i-reference-reads unite-ver8-seqs_99_04.02.2020.qza \
+--i-reference-taxonomy unite-ver8-taxonomy_99_04.02.2020.qza \
+--o-classifier unite-ver8-99-classifier-04.02.2020.qza
+Saved TaxonomicClassifier to: unite-ver8-99-classifier-04.02.2020.qza
+
+
+
+
+#make the taxonomy and viewable form with Unite filtered fungi
+
+(qiime2-2020.2) Annes-MacBook-Air-3:UniteQiimeData annekinkopf$ qiime feature-classifier classify-sklearn \
+--i-classifier unite-ver8-99-classifier-04.02.2020.qza \
+--i-reads rep-seqsF.qza \
+--o-classification taxonomy.qza
+Saved FeatureData[Taxonomy] to: taxonomy.qza
+
+(qiime2-2020.2) Annes-MacBook-Air-3:Unite annekinkopf$ cd UniteQiimeData
+(qiime2-2020.2) Annes-MacBook-Air-3:UniteQiimeData annekinkopf$ qiime metadata tabulate \
+--m-input-file blasttaxonomy.qza \
+--o-visualization blasttaxonomy.qzv
+Saved Visualization to: blasttaxonomy.qzv
+
+
+
+
+#making updated UNITE environment with 99 (update of preliminary that did not use rep2-seqsF-dada2.qza)
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime feature-classifier classify-sklearn \
+--i-classifier unite-ver8-99-classifier-04.02.2020.qza \
+--i-reads rep2-seqsF-dada2.qza \
+--o-classification blasttaxonomy99.qza
+Saved FeatureData[Taxonomy] to: blasttaxonomy99.qza
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime taxa filter-table \
+> --i-table tableF-dada2.qza \
+> --i-taxonomy blasttaxonomy99.qza \
+> --p-include k__Fungi \
+> --o-filtered-table KingdomFungiTable99.qza
+Saved FeatureTable[Frequency] to: KingdomFungiTable99.qza
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime feature-table summarize \
+> --i-table KingdomFungiTable99.qza \
+> --o-visualization KingdomFungiTable99.qzv \
+> --m-sample-metadata-file Fungi_Metadata_SeedCoat.txt
+Saved Visualization to: KingdomFungiTable99.qzv
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ #making the taxa barplots for visualization
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime taxa barplot \
+> --i-table tableF.qza \
+> --i-taxonomy blasttaxonomy99.qza \
+> --m-metadata-file Fungi_Metadata_SeedCoat.txt \
+> --o-visualization taxa-bar-plotsF99.qzv
+Saved Visualization to: taxa-bar-plotsF99.qzv
+
+
+
+
+
+
+#to make Feature table for new Unite filtered fungi samples
+
+(qiime2-2020.2) Annes-MacBook-Air-3:UniteQiimeData annekinkopf$ qiime taxa filter-table --i-table tableF-dada2.qza --i-taxonomy blasttaxonomy.qza --p-include k__Fungi --o-filtered-table KingdomFungiTable.qza
+Saved FeatureTable[Frequency] to: KingdomFungiTable.qza
+
+#making feature table again in viewable for qzv for Unite filtered fungi samples
+
+(qiime2-2020.2) Annes-MacBook-Air-3:UniteQiimeData annekinkopf$ qiime feature-table summarize --i-table KingdomFungiTable.qza --o-visualization KingdomFungiTable.qzv --m-sample-metadata-file Fungi_Metadata_SeedCoat.txt
+Saved Visualization to: KingdomFungiTable.qzv
+(qiime2-2020.2) Annes-MacBook-Air-3:UniteQiimeData annekinkopf$ qiime tools view KingdomFungiTable.qzv
+Press the 'q' key, Control-C, or Control-D to quit. This view may no longer be accessible or work correctly after quitting.
+(qiime2-2020.2) Annes-MacBook-Air-3:UniteQiimeData annekinkopf$ cd ..
+(qiime2-2020.2) Annes-MacBook-Air-3:Unite annekinkopf$ cd ..
+(qiime2-2020.2) Annes-MacBook-Air-3:Fungi annekinkopf$ cd FungiFun
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime feature-table tabulate-seqs \
+--i-data rep2-seqsF-dada2.qza \
+--o-visualization rep2-seqsF-dada2.qzv
+Saved Visualization to: rep2-seqsF-dada2.qzv
+
+#diversity visualizations for Unite filtered data saved the new core metrics folder with "F"
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime diversity core-metrics-phylogenetic \
+--i-phylogeny rooted-tree.qza \
+--i-table tableF.qza \
+--p-sampling-depth 1224 \
+--m-metadata-file Fungi_Metadata_SeedCoat.txt \
+--output-dir core-metricsF-results
+
+Saved FeatureTable[Frequency] to: core-metricsF-results/rarefied_table.qza
+Saved SampleData[AlphaDiversity] % Properties('phylogenetic') to: core-metricsF-results/faith_pd_vector.qza
+Saved SampleData[AlphaDiversity] to: core-metricsF-results/observed_otus_vector.qza
+Saved SampleData[AlphaDiversity] to: core-metricsF-results/shannon_vector.qza
+Saved SampleData[AlphaDiversity] to: core-metricsF-results/evenness_vector.qza
+Saved DistanceMatrix % Properties('phylogenetic') to: core-metricsF-results/unweighted_unifrac_distance_matrix.qza
+Saved DistanceMatrix % Properties('phylogenetic') to: core-metricsF-results/weighted_unifrac_distance_matrix.qza
+Saved DistanceMatrix to: core-metricsF-results/jaccard_distance_matrix.qza
+Saved DistanceMatrix to: core-metricsF-results/bray_curtis_distance_matrix.qza
+Saved PCoAResults to: core-metricsF-results/unweighted_unifrac_pcoa_results.qza
+Saved PCoAResults to: core-metricsF-results/weighted_unifrac_pcoa_results.qza
+Saved PCoAResults to: core-metricsF-results/jaccard_pcoa_results.qza
+Saved PCoAResults to: core-metricsF-results/bray_curtis_pcoa_results.qza
+Saved Visualization to: core-metricsF-results/unweighted_unifrac_emperor.qzv
+Saved Visualization to: core-metricsF-results/weighted_unifrac_emperor.qzv
+Saved Visualization to: core-metricsF-results/jaccard_emperor.qzv
+Saved Visualization to: core-metricsF-results/bray_curtis_emperor.qzv
+
+
+#diversity visualizations with the Kingdom Fungi Table (new output of core metrics folder, the one with no number)
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime diversity core-metrics-phylogenetic \
+--i-phylogeny rooted-tree.qza \
+--i-table KingdomFungiTable.qza \
+--p-sampling-depth 1224 \
+--m-metadata-file Fungi_Metadata_SeedCoat.txt \
+--output-dir core-metrics-results
+Saved FeatureTable[Frequency] to: core-metrics-results/rarefied_table.qza
+Saved SampleData[AlphaDiversity] % Properties('phylogenetic') to: core-metrics-results/faith_pd_vector.qza
+Saved SampleData[AlphaDiversity] to: core-metrics-results/observed_otus_vector.qza
+Saved SampleData[AlphaDiversity] to: core-metrics-results/shannon_vector.qza
+Saved SampleData[AlphaDiversity] to: core-metrics-results/evenness_vector.qza
+Saved DistanceMatrix % Properties('phylogenetic') to: core-metrics-results/unweighted_unifrac_distance_matrix.qza
+Saved DistanceMatrix % Properties('phylogenetic') to: core-metrics-results/weighted_unifrac_distance_matrix.qza
+Saved DistanceMatrix to: core-metrics-results/jaccard_distance_matrix.qza
+Saved DistanceMatrix to: core-metrics-results/bray_curtis_distance_matrix.qza
+Saved PCoAResults to: core-metrics-results/unweighted_unifrac_pcoa_results.qza
+Saved PCoAResults to: core-metrics-results/weighted_unifrac_pcoa_results.qza
+Saved PCoAResults to: core-metrics-results/jaccard_pcoa_results.qza
+Saved PCoAResults to: core-metrics-results/bray_curtis_pcoa_results.qza
+Saved Visualization to: core-metrics-results/unweighted_unifrac_emperor.qzv
+Saved Visualization to: core-metrics-results/weighted_unifrac_emperor.qzv
+Saved Visualization to: core-metrics-results/jaccard_emperor.qzv
+Saved Visualization to: core-metrics-results/bray_curtis_emperor.qzv
+
+
+#(6/30) Trying using 97 instead of 99 and making the UNITE environment
+
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime tools import \
+> --type FeatureData[Sequence] \
+> --input-path sh_refs_qiime_ver8_97_04.02.2020.fasta \
+> --output-path unite-ver8-seqs_97_04.02.2020.qza 
+Imported sh_refs_qiime_ver8_97_04.02.2020.fasta as DNASequencesDirectoryFormat to unite-ver8-seqs_97_04.02.2020.qza
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime tools import \
+> --type FeatureData[Taxonomy] \
+> --input-path sh_taxonomy_qiime_ver8_97_04.02.2020.txt \
+> --output-path unite-ver8-taxonomy_97_04.02.2020.qza \
+> --input-format HeaderlessTSVTaxonomyFormat
+Imported sh_taxonomy_qiime_ver8_97_04.02.2020.txt as HeaderlessTSVTaxonomyFormat to unite-ver8-taxonomy_97_04.02.2020.qza
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime feature-classifier fit-classifier-naive-bayes \
+> --i-reference-reads unite-ver8-seqs_97_04.02.2020.qza \
+> --i-reference-taxonomy unite-ver8-taxonomy_97_04.02.2020.qza \
+> --o-classifier unite-ver8-97-classifier-04.02.2020.qza
+Saved TaxonomicClassifier to: unite-ver8-97-classifier-04.02.2020.qza
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime feature-classifier classify-sklearn
+--i-classifier unite-ver8-97-classifier-04.02.2020.qza \
+--i-reads rep2-seqsF-dada2.qza \
+--o-classification blasttaxonomy97.qza
+Saved FeatureData[Taxonomy] to: blasttaxonomy97.qza
+
+#make blasttaxonomy97.qza a qzv file that is viewable
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime metadata tabulate \
+> --m-input-file blasttaxonomy97.qza \
+> --o-visualization blasttaxonomy97.qzv
+Saved Visualization to: blasttaxonomy97.qzv
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime taxa filter-table \
+> --i-table tableF-dada2.qza \
+> --i-taxonomy blasttaxonomy97.qza \
+> --p-include k__Fungi \
+> --o-filtered-table KingdomFungiTable97.qza
+Saved FeatureTable[Frequency] to: KingdomFungiTable97.qza
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime feature-table summarize \
+> --i-table KingdomFungiTable97.qza \
+> --o-visualization KingdomFungiTable97.qzv \
+> --m-sample-metadata-file Fungi_Metadata_SeedCoat.txt
+Saved Visualization to: KingdomFungiTable97.qzv
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ #make the taxa barplots for visualizations
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime taxa barplot \
+> --i-table tableF.qza \
+> --i-taxonomy blasttaxonomy97.qza \
+> --m-metadata-file Fungi_Metadata_SeedCoat.txt \
+> --o-visualization taxa-bar-plotsF97.qza
+Saved Visualization to: taxa-bar-plotsF97.qza.qzv
+
+#end of (6/30) test on 97
+
+
+
+#taxonomic analysis to make a taxa barplot
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime taxa barplot \
+--i-table KingdomFungiTable.qza \
+--i-taxonomy blasttaxonomy.qza \
+--m-metadata-file Fungi_Metadata_SeedCoat.txt \
+--o-visualization taxa-bar-plotsF.qzv
+Saved Visualization to: taxa-bar-plotsF.qzv
+
+
+#code for trying Alpha rareifaction
+
+#alpha rarefaction with a max and min depth (was not used, only as a test)
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime diversity alpha-rarefaction \
+--i-table KingdomFungiTable.qza \
+--i-phylogeny rooted-tree.qza \
+--p-max-depth 1224 \
+--p-min-depth 353 \
+--m-metadata-file Fungi_Metadata_SeedCoat.txt \
+--o-visualization alpha-rarefaction.qzv
+Saved Visualization to: alpha-rarefaction.qzv
+
+#FINAL Alpha rarefaction
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime diversity alpha-rarefaction \
+--i-table KingdomFungiTable.qza \
+--i-phylogeny rooted-tree.qza \
+--p-max-depth 1224\
+--m-metadata-file Fungi_Metadata_SeedCoat.txt \
+--o-visualization alpha-rarefaction2.qzv
+Saved Visualization to: alpha-rarefaction2.qzv
+
+
+
+
+
+#Exporting and modifying BIOM tables then putting into txt form (7/1)
+
+
+(qiime2-2020.2) Annes-MacBook-Air-3:~ annekinkopf$ cd Desktop/TeamCoolAnt/raw_data/Fungi/FungiFun
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime tools export \ 
+--input-path tableF.qza \ 
+--output-path exported2
+Exported tableF.qza as BIOMV210DirFmt to directory exported2
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime tools export \ 
+--input-path blasttaxonomy97.qza \
+--output-path exported2
+Exported blasttaxonomy97.qza as TSVTaxonomyDirectoryFormat to directory exported2
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ cd exported2
+(qiime2-2020.2) Annes-MacBook-Air-3:exported2 annekinkopf$ cp taxonomy.tsv biom-taxonomy97.tsv
+(qiime2-2020.2) Annes-MacBook-Air-3:exported2 annekinkopf$ vi biom-taxonomy97.tsv
+(qiime2-2020.2) Annes-MacBook-Air-3:exported2 annekinkopf$ biom add-metadata -i feature-table.biom -o table-with-taxonomy97.biom \
+--observation-metadata-fp biom-taxonomy97.tsv \
+--sc-separated taxonomy
+
+(qiime2-2020.2) Annes-MacBook-Air-3:exported2 annekinkopf$ biom convert -i table-with-taxonomy97.biom -o table-with-taxonomy97.txt \
+--to-tsv \
+--header-key taxonomy
+
+
+
+
+
+#Exporting and modifying BIOM tables then putting into txt form orginial attempt (6/29)
+
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime tools export \
+> --input-path tableF.qza \
+> --output-path 
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime tools export --input-path tableF.qza --output-path ./
+Exported tableF.qza as BIOMV210DirFmt to directory ./
+	
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime tools export --input-path tableF.qza --output-path exported
+Exported tableF.qza as BIOMV210DirFmt to directory exported
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ ls
+Fungi_Metadata_SeedCoat.txt			exported					sh_refs_qiime_ver8_dynamic_04.02.2020.fasta
+Fungi_Metadata_SeedCoat.xlsx			feature-table.biom				sh_taxonomy_qiime_ver8_97_04.02.2020.txt
+KingdomFungiTable.qza				make_manifest.sh				sh_taxonomy_qiime_ver8_99_04.02.2020.txt
+KingdomFungiTable.qzv				manifest.tsv					sh_taxonomy_qiime_ver8_dynamic_04.02.2020.txt
+QIIME_ITS_readme_04.02.2020.pdf			masked-aligned-rep-seqs.qza			stats2nd-dada2.qza
+aligned-rep-seqs.qza				nohup.out					statsF-dada2.qza
+alpha-rarefaction.qzv				paired-end-demux.qza				statsF-dada2.qzv
+alpha-rarefaction2.qzv				paired-end-demux.qzv				tableF-dada2.qza
+blasttaxonomy.qza				rep-seqsF.qza					tableF.qza
+blasttaxonomy.qzv				rep-seqsF.qzv					tableF.qzv
+core-metrics-results				rep2-seqsF-dada2.qza				taxa-bar-plotsF.qzv
+core-metrics1-results				rep2-seqsF-dada2.qzv				unite-ver8-99-classifier-04.02.2020.qza
+core-metrics2-results				rooted-tree.qza					unite-ver8-seqs_99_04.02.2020.qza
+denoise.sh					sh_refs_qiime_ver8_97_04.02.2020.fasta		unite-ver8-taxonomy_99_04.02.2020.qza
+developer					sh_refs_qiime_ver8_99_04.02.2020.fasta		unrooted-tree.qza
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ cd exported
+(qiime2-2020.2) Annes-MacBook-Air-3:exported annekinkopf$ ls
+feature-table.biom
+(qiime2-2020.2) Annes-MacBook-Air-3:exported annekinkopf$ cd ..
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ qiime tools export --input-path blasttaxonomy.qza --output-path exported
+Exported blasttaxonomy.qza as TSVTaxonomyDirectoryFormat to directory exported
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ cd exported
+(qiime2-2020.2) Annes-MacBook-Air-3:exported annekinkopf$ ls
+feature-table.biom	taxonomy.tsv
+(qiime2-2020.2) Annes-MacBook-Air-3:exported annekinkopf$ cp taxonomy.tsv biom-taxonomy.tsv
+(qiime2-2020.2) Annes-MacBook-Air-3:exported annekinkopf$ ls
+biom-taxonomy.tsv	feature-table.biom	taxonomy.tsv
+(qiime2-2020.2) Annes-MacBook-Air-3:exported annekinkopf$ vi biom-taxonomy.tsv
+(qiime2-2020.2) Annes-MacBook-Air-3:exported annekinkopf$ biom add-metadata -i exported/feature-table.biom -o table-with-taxonomy.biom --observation-metadata-fp biom-taxonomy.tsv --sc-separated taxonomy
+Usage: biom add-metadata [OPTIONS]
+Try "biom add-metadata -h" for help.
+
+Error: Invalid value for "-i" / "--input-fp": File "exported/feature-table.biom" does not exist.
+(qiime2-2020.2) Annes-MacBook-Air-3:exported annekinkopf$ cd ..
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ biom add-metadata -i exported/feature-table.biom -o table-with-taxonomy.biom --observation-metadata-fp biom-taxonomy.tsv --sc-separated taxonomy
+Usage: biom add-metadata [OPTIONS]
+Try "biom add-metadata -h" for help.
+
+Error: Invalid value for "--observation-metadata-fp": File "biom-taxonomy.tsv" does not exist.
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ biom add-metadata -i exported/feature-table.biom -o table-with-taxonomy.biom
+Traceback (most recent call last):
+  File "/Users/annekinkopf/opt/miniconda3/envs/qiime2-2020.2/bin/biom", line 11, in <module>
+    sys.exit(cli())
+  File "/Users/annekinkopf/opt/miniconda3/envs/qiime2-2020.2/lib/python3.6/site-packages/click/core.py", line 764, in __call__
+    return self.main(*args, **kwargs)
+  File "/Users/annekinkopf/opt/miniconda3/envs/qiime2-2020.2/lib/python3.6/site-packages/click/core.py", line 717, in main
+    rv = self.invoke(ctx)
+  File "/Users/annekinkopf/opt/miniconda3/envs/qiime2-2020.2/lib/python3.6/site-packages/click/core.py", line 1137, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+  File "/Users/annekinkopf/opt/miniconda3/envs/qiime2-2020.2/lib/python3.6/site-packages/click/core.py", line 956, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+  File "/Users/annekinkopf/opt/miniconda3/envs/qiime2-2020.2/lib/python3.6/site-packages/click/core.py", line 555, in invoke
+    return callback(*args, **kwargs)
+  File "/Users/annekinkopf/opt/miniconda3/envs/qiime2-2020.2/lib/python3.6/site-packages/biom/cli/metadata_adder.py", line 107, in add_metadata
+    float_fields, sample_header, observation_header)
+  File "/Users/annekinkopf/opt/miniconda3/envs/qiime2-2020.2/lib/python3.6/site-packages/biom/cli/metadata_adder.py", line 145, in _add_metadata
+    raise ValueError('Must specify sample_metadata and/or '
+ValueError: Must specify sample_metadata and/or observation_metadata.
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ biom add-metadata -i exported/feature-table.biom -o table-with-taxonomy.biom --observation-metadata-fp exported/biom-taxonomy.tsv --sc-separated taxonomy
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ ls
+Fungi_Metadata_SeedCoat.txt			feature-table.biom				sh_taxonomy_qiime_ver8_99_04.02.2020.txt
+Fungi_Metadata_SeedCoat.xlsx			make_manifest.sh				sh_taxonomy_qiime_ver8_dynamic_04.02.2020.txt
+KingdomFungiTable.qza				manifest.tsv					stats2nd-dada2.qza
+KingdomFungiTable.qzv				masked-aligned-rep-seqs.qza			statsF-dada2.qza
+QIIME_ITS_readme_04.02.2020.pdf			nohup.out					statsF-dada2.qzv
+aligned-rep-seqs.qza				paired-end-demux.qza				table-with-taxonomy.biom
+alpha-rarefaction.qzv				paired-end-demux.qzv				tableF-dada2.qza
+alpha-rarefaction2.qzv				rep-seqsF.qza					tableF.qza
+blasttaxonomy.qza				rep-seqsF.qzv					tableF.qzv
+blasttaxonomy.qzv				rep2-seqsF-dada2.qza				taxa-bar-plotsF.qzv
+core-metrics-results				rep2-seqsF-dada2.qzv				unite-ver8-99-classifier-04.02.2020.qza
+core-metrics1-results				rooted-tree.qza					unite-ver8-seqs_99_04.02.2020.qza
+core-metrics2-results				sh_refs_qiime_ver8_97_04.02.2020.fasta		unite-ver8-taxonomy_99_04.02.2020.qza
+denoise.sh					sh_refs_qiime_ver8_99_04.02.2020.fasta		unrooted-tree.qza
+developer					sh_refs_qiime_ver8_dynamic_04.02.2020.fasta
+exported					sh_taxonomy_qiime_ver8_97_04.02.2020.txt
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ biom convert -i table-with-taxonomy.biom -o table-with-taxonomy.tsv --to-tsv --header-key taxonomy
+(qiime2-2020.2) Annes-MacBook-Air-3:FungiFun annekinkopf$ ls
+Fungi_Metadata_SeedCoat.txt			feature-table.biom				sh_taxonomy_qiime_ver8_99_04.02.2020.txt
+Fungi_Metadata_SeedCoat.xlsx			make_manifest.sh				sh_taxonomy_qiime_ver8_dynamic_04.02.2020.txt
+KingdomFungiTable.qza				manifest.tsv					stats2nd-dada2.qza
+KingdomFungiTable.qzv				masked-aligned-rep-seqs.qza			statsF-dada2.qza
+QIIME_ITS_readme_04.02.2020.pdf			nohup.out					statsF-dada2.qzv
+aligned-rep-seqs.qza				paired-end-demux.qza				table-with-taxonomy.biom
+alpha-rarefaction.qzv				paired-end-demux.qzv				table-with-taxonomy.tsv
+alpha-rarefaction2.qzv				rep-seqsF.qza					tableF-dada2.qza
+blasttaxonomy.qza				rep-seqsF.qzv					tableF.qza
+blasttaxonomy.qzv				rep2-seqsF-dada2.qza				tableF.qzv
+core-metrics-results				rep2-seqsF-dada2.qzv				taxa-bar-plotsF.qzv
+core-metrics1-results				rooted-tree.qza					unite-ver8-99-classifier-04.02.2020.qza
+core-metrics2-results				sh_refs_qiime_ver8_97_04.02.2020.fasta		unite-ver8-seqs_99_04.02.2020.qza
+denoise.sh					sh_refs_qiime_ver8_99_04.02.2020.fasta		unite-ver8-taxonomy_99_04.02.2020.qza
+developer					sh_refs_qiime_ver8_dynamic_04.02.2020.fasta	unrooted-tree.qza
+exported					sh_taxonomy_qiime_ver8_97_04.02.2020.txt
+(qiime2-2020.2) Annes-MacBook-Air-3:exported2 annekinkopf$ biom convert -i table-with-taxonomy97.biom -o table-with-taxonomy97.txt \ 
+--to-tsv \
+--header-key taxonomy 
+
